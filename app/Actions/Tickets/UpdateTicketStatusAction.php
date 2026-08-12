@@ -2,6 +2,8 @@
 
 namespace App\Actions\Tickets;
 
+use App\Jobs\SendTicketNotificationJob;
+use App\Services\Notifications\EmailNotificationStrategy;
 use App\Enums\TicketStatus;
 use App\Models\Ticket;
 use App\Models\User;
@@ -33,8 +35,13 @@ class UpdateTicketStatusAction
             ]);
 
             // dispatch the redis background queue job
+            SendTicketNotificationJob::dispatch(
+                $ticket,
+                "Ticket changed to {$newStatus->label()}.",
+                new EmailNotificationStrategy()
+            ); 
 
             return $ticket;
         });
     }
-} 
+}

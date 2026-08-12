@@ -2,6 +2,8 @@
 
 namespace App\Actions\Tickets;
 
+use App\Jobs\SendTicketNotificationJob;
+use App\Services\Notifications\EmailNotificationStrategy;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +18,12 @@ class AddTicketCommentAction {
                 'type' => 'comment_added',
                 'comment' => $comment,
             ]);
+
+            SendTicketNotificationJob::dispatch(
+                $ticket,
+                "New comment added: {$comment}",
+                new EmailNotificationStrategy()
+            );
 
             return $ticket;
         });

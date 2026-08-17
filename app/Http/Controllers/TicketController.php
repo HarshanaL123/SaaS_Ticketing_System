@@ -24,12 +24,17 @@ class TicketController extends Controller
         // 2. Utilize the custom Eloquent Scope: forCustomer()
         $tickets = Ticket::with(['customer', 'agent'])
             ->when($request->user()->isCustomer(), fn($q) => $q->forCustomer($request->user()))
+            // Dynamically filter the database based on the URL query string. 
+            ->when($request->filled('status'), fn($q) => $q->where('status', $request->status))
             ->latest()
-            ->paginate(15);
+            ->paginate(15)
+            ->withQueryString(); // using this will prevents pagination links from dropping the filters. 
 
         return Inertia::render('Tickets/Index', [
             // wrap the paginated results in the strict JSON contract.
             'tickets' => TicketResource::collection($tickets),
+            // pass the current filters back to vue. 
+            'filters' => $request->only(['status']),
         ]);
     }
 

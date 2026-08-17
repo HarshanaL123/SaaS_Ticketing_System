@@ -1,13 +1,27 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 
 defineProps({
     tickets: {
         type: Object,
         required: true,
     },
+    filters: {
+        type: Object,
+        default: () => ({}) 
+    }
 }); 
+
+// The function that runs when a user clicks a filter tab
+const applyFilter = (statusValue) => {
+    // Send an AJAX GET request to the index, passing the status parameter. 
+    // preserveState and preserveScroll ensure the page doesn't jarringly refresh. 
+    router.get(route('tickets.index'), { status: statusValue}, {
+        preserveState: true,
+        preserveScroll: true,
+    });
+};
 </script>
 
 <template>
@@ -29,10 +43,26 @@ defineProps({
                     <div class="p-6 text-gray-900">
                         <!--Filter Controls-->
                         <div class="flex space-x-6 mb-6 border-b border-gray-200 pb-3">
-                            <button class="text-indigo-600 font-semibold border-b-2 border-indigo-600 pb-3 -mb-3.5">All Tickets</button>
-                            <button class="text-gray-500 hover:text-gray-800 font-medium pb-3 -mb-3.5 transition">Open</button>
-                            <button class="text-gray-500 hover:text-gray-800 font-medium pb-3 -mb-3.5 transition">In Progress</button>
-                            <button class="text-gray-500 hover:text-gray-800 font-medium pb-3 -mb-3.5 transition">Closed</button>
+                            <button
+                            @click="applyFilter(null)"
+                            :class="!filters.status ? 'text-indigo-600 font-semibold border-b-2 border-indigo-600 pb-3 -mb-3.5' : 'text-gray-500 hover:text-gray-800 font-medium pb-3 -mb-3.5 transition'">
+                            All Tickets
+                            </button>
+                            <button
+                            @click="applyFilter('open')"
+                            :class="filters.status === 'open' ? 'text-indigo-600 font-semibold border-b-2 border-indigo-600 pb-3 -mb-3.5' : 'text-gray-500 hover:text-gray-800 font-medium pb-3 -mb-3.5 transition'">
+                            Open
+                            </button>
+                            <button
+                            @click="applyFilter('in_progress')"
+                            :class="filters.status === 'in_progress' ? 'text-indigo-600 font-semibold border-b-2 border-indigo-600 pb-3 -mb-3.5' : 'text-gray-500 hover:text-gray-800 font-medium pb-3 -mb-3.5 transition'">
+                            In Progress 
+                            </button>
+                            <button
+                            @click="applyFilter('closed')"
+                            :class="filters.status === 'closed' ? 'text-indigo-600 font-semibold border-b-2 border-indigo-600 pb-3 -mb-3.5' : 'text-gray-500 hover:text-gray-800 font-medium pb-3 -mb-3.5 transition'">
+                            Closed 
+                            </button>
                         </div>
 
                         <!--Modern Data Table-->
@@ -51,7 +81,7 @@ defineProps({
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
                                     <!--Loop through the JSON Contract data-->
-                                    <tr v-for="ticket in ticket.data" :key="ticket.id" class="hover:bg-gray-50 transition-colors duration-150">
+                                    <tr v-for="ticket in tickets.data" :key="ticket.id" class="hover:bg-gray-50 transition-colors duration-150">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             #{{ ticket.id }}
                                         </td>
@@ -75,7 +105,7 @@ defineProps({
                                             {{ ticket.created_at }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <Link :href="route('ticket.show', ticket.id)" class="text-indigo-600 hover:text-indigo-900 font-bold">
+                                            <Link :href="route('tickets.show', ticket.id)" class="text-indigo-600 hover:text-indigo-900 font-bold">
                                                 View &rarr;
                                             </Link>
                                         </td>

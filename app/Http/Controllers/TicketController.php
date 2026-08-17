@@ -38,6 +38,12 @@ class TicketController extends Controller
         ]);
     }
 
+    // Show the form for creating a new ticket.
+    public function create(): Response
+    {
+        return Inertia::render('Tickets/Create');
+    }
+
     // Store a newly created ticket.
     public function store(StoreTicketRequest $request, CreateTicketAction $action): RedirectResponse
     {

@@ -31,9 +31,9 @@ const applyFilter = (statusValue) => {
         <template #header>
             <div class="flex justify-between items-center">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Support Tickets</h2>
-                <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md transition shadow-sm text-sm">
+                <Link :href="route('tickets.create')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md transition shadow-sm text-sm">
                     + Create Ticket
-                </button>
+                </Link>
             </div>
         </template>
 

@@ -1,0 +1,22 @@
+<?php
+
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\User;
+use App\Enums\TicketPriority;
+use App\Enums\TicketStatus;
+
+class TicketFactory extends Factory
+{
+    public function definition(): array
+    {
+        return [
+            'user_id' => User::factory(),
+            'title' => fake()->sentence(),
+            'description' => fake()->paragraph(),
+            'priority' => TicketPriority::MEDIUM->value,
+            'status' => TicketStatus::OPEN->value,
+        ];
+    }
+}

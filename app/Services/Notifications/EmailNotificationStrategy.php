@@ -4,8 +4,8 @@ namespace App\Services\Notifications;
 
 use App\Contracts\NotificationInterface;
 use App\Models\Ticket;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-
 class EmailNotificationStrategy implements NotificationInterface
 {
     public function send(Ticket $ticket, string $message): void
